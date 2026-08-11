@@ -357,3 +357,150 @@ button:hover {
   background-color: #d4edda;
   color: #155724;
 }
+/* =========================
+   MEMBER FORM
+========================= */
+
+.member-form {
+  max-width: 700px;
+}
+
+/* =========================
+   PROFILE UPLOAD
+========================= */
+
+.profile-upload {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  margin-bottom: 25px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.profile-preview {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background-color: #f1f1f1;
+  border: 3px solid #ddd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.profile-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-preview span {
+  font-size: 45px;
+}
+
+.upload-area {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.upload-area label {
+  font-weight: bold;
+}
+
+.upload-area input[type="file"] {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+.upload-area small {
+  color: #777;
+  font-size: 12px;
+}
+
+/* =========================
+   MEMBER AVATAR IN TABLE
+========================= */
+
+.member-avatar {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background-color: #f1f1f1;
+  border: 2px solid #ddd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.member-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.member-avatar span {
+  font-size: 20px;
+}
+
+/* =========================
+   MEMBER STATUS
+========================= */
+
+.status {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 15px;
+  font-size: 13px;
+}
+
+.active-status {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.inactive-status {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+/* =========================
+   DELETE BUTTON
+========================= */
+
+.delete-button {
+  background-color: #dc3545;
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.delete-button:hover {
+  background-color: #b02a37;
+}
+
+/* =========================
+   MOBILE MEMBER FORM
+========================= */
+
+@media (max-width: 600px) {
+  .profile-upload {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .member-form {
+    width: 100%;
+  }
+
+  .data-table {
+    min-width: 900px;
+  }
+}

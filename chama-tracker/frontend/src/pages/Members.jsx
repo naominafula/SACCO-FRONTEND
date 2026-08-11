@@ -11,6 +11,7 @@ function Members() {
       email: "john@example.com",
       joinDate: "01/01/2026",
       status: "Active",
+      profilePicture: null,
     },
     {
       id: 2,
@@ -19,6 +20,7 @@ function Members() {
       email: "mary@example.com",
       joinDate: "05/01/2026",
       status: "Active",
+      profilePicture: null,
     },
     {
       id: 3,
@@ -27,6 +29,7 @@ function Members() {
       email: "peter@example.com",
       joinDate: "10/01/2026",
       status: "Active",
+      profilePicture: null,
     },
   ]);
 
@@ -38,9 +41,12 @@ function Members() {
     email: "",
     joinDate: "",
     status: "Active",
+    profilePicture: null,
   });
 
-  // Handle input changes
+  const [preview, setPreview] = useState(null);
+
+  // Handle text/input changes
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -48,7 +54,37 @@ function Members() {
     });
   };
 
-  // Add new member
+  // Handle profile picture
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+
+    if (!file) {
+      return;
+    }
+
+    // Only allow image files
+    if (!file.type.startsWith("image/")) {
+      alert("Please select an image file.");
+      return;
+    }
+
+    // Limit image size to 2MB
+    if (file.size > 2 * 1024 * 1024) {
+      alert("Image size must be less than 2MB.");
+      return;
+    }
+
+    setFormData({
+      ...formData,
+      profilePicture: file,
+    });
+
+    // Create image preview
+    const imageUrl = URL.createObjectURL(file);
+    setPreview(imageUrl);
+  };
+
+  // Add member
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -59,6 +95,7 @@ function Members() {
       email: formData.email,
       joinDate: formData.joinDate,
       status: formData.status,
+      profilePicture: preview,
     };
 
     setMembers([...members, newMember]);
@@ -70,8 +107,12 @@ function Members() {
       email: "",
       joinDate: "",
       status: "Active",
+      profilePicture: null,
     });
 
+    setPreview(null);
+
+    // Close form
     setShowForm(false);
   };
 
@@ -86,6 +127,22 @@ function Members() {
         members.filter((member) => member.id !== id)
       );
     }
+  };
+
+  // Close form and reset it
+  const closeForm = () => {
+    setShowForm(false);
+
+    setFormData({
+      name: "",
+      phone: "",
+      email: "",
+      joinDate: "",
+      status: "Active",
+      profilePicture: null,
+    });
+
+    setPreview(null);
   };
 
   return (
@@ -105,7 +162,9 @@ function Members() {
             </div>
 
             <button
-              onClick={() => setShowForm(!showForm)}
+              onClick={() =>
+                showForm ? closeForm() : setShowForm(true)
+              }
             >
               {showForm ? "Close" : "+ Add Member"}
             </button>
@@ -113,12 +172,45 @@ function Members() {
 
           {/* ADD MEMBER FORM */}
           {showForm && (
-            <div className="form-card">
+            <div className="form-card member-form">
 
               <h2>Add New Member</h2>
 
               <form onSubmit={handleSubmit}>
 
+                {/* PROFILE PICTURE */}
+                <div className="profile-upload">
+
+                  <div className="profile-preview">
+                    {preview ? (
+                      <img
+                        src={preview}
+                        alt="Profile Preview"
+                      />
+                    ) : (
+                      <span>👤</span>
+                    )}
+                  </div>
+
+                  <div className="upload-area">
+                    <label>
+                      Profile Picture
+                    </label>
+
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageChange}
+                    />
+
+                    <small>
+                      JPG, PNG or WEBP. Maximum size: 2MB.
+                    </small>
+                  </div>
+
+                </div>
+
+                {/* FULL NAME */}
                 <label>Full Name</label>
 
                 <input
@@ -130,6 +222,7 @@ function Members() {
                   required
                 />
 
+                {/* PHONE */}
                 <label>Phone Number</label>
 
                 <input
@@ -141,6 +234,7 @@ function Members() {
                   required
                 />
 
+                {/* EMAIL */}
                 <label>Email</label>
 
                 <input
@@ -152,6 +246,7 @@ function Members() {
                   required
                 />
 
+                {/* JOIN DATE */}
                 <label>Join Date</label>
 
                 <input
@@ -162,6 +257,7 @@ function Members() {
                   required
                 />
 
+                {/* STATUS */}
                 <label>Status</label>
 
                 <select
@@ -178,6 +274,7 @@ function Members() {
                   </option>
                 </select>
 
+                {/* SUBMIT */}
                 <button type="submit">
                   Add Member
                 </button>
@@ -194,6 +291,7 @@ function Members() {
               <thead>
                 <tr>
                   <th>ID</th>
+                  <th>Photo</th>
                   <th>Name</th>
                   <th>Phone</th>
                   <th>Email</th>
@@ -211,24 +309,55 @@ function Members() {
 
                     <tr key={member.id}>
 
-                      <td>{index + 1}</td>
+                      <td>
+                        {index + 1}
+                      </td>
 
-                      <td>{member.name}</td>
+                      {/* PROFILE PICTURE */}
+                      <td>
+                        <div className="member-avatar">
 
-                      <td>{member.phone}</td>
+                          {member.profilePicture ? (
+                            <img
+                              src={member.profilePicture}
+                              alt={member.name}
+                            />
+                          ) : (
+                            <span>👤</span>
+                          )}
 
-                      <td>{member.email}</td>
-
-                      <td>{member.joinDate}</td>
+                        </div>
+                      </td>
 
                       <td>
-                        <span className="status">
+                        {member.name}
+                      </td>
+
+                      <td>
+                        {member.phone}
+                      </td>
+
+                      <td>
+                        {member.email}
+                      </td>
+
+                      <td>
+                        {member.joinDate}
+                      </td>
+
+                      <td>
+                        <span
+                          className={
+                            member.status === "Active"
+                              ? "status active-status"
+                              : "status inactive-status"
+                          }
+                        >
                           {member.status}
                         </span>
                       </td>
 
                       <td>
-
                         <button
                           className="delete-button"
                           onClick={() =>
@@ -237,7 +366,6 @@ function Members() {
                         >
                           🗑️ Delete
                         </button>
-
                       </td>
 
                     </tr>
@@ -247,11 +375,9 @@ function Members() {
                 ) : (
 
                   <tr>
-
-                    <td colSpan="7">
+                    <td colSpan="8">
                       No members found.
                     </td>
-
                   </tr>
 
                 )}
