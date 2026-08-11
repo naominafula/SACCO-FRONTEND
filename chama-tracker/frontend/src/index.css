@@ -333,3 +333,27 @@ button:hover {
     padding: 20px;
   }
 }
+/* =========================
+   MEMBER ACTIONS
+========================= */
+
+.delete-button {
+  background-color: #dc3545;
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.delete-button:hover {
+  background-color: #b02a37;
+}
+
+.status {
+  padding: 5px 10px;
+  border-radius: 15px;
+  font-size: 13px;
+  background-color: #d4edda;
+  color: #155724;
+}
