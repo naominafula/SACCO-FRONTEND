@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-function Login() {
+function Login({ toggleTheme, theme, navigate }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -14,8 +14,27 @@ function Login() {
   return (
     <div className="auth-page">
       <div className="auth-card">
-        <h1>SACCO Chama Tracker</h1>
-        <h2>Login</h2>
+        <div className="brand-group">
+          <div className="brand-mark">A</div>
+          <div>
+            <p className="brand-kicker">Member-first finance</p>
+            <h2>Apex SACCO</h2>
+          </div>
+        </div>
+
+        <div className="auth-header-row">
+          <h1>Welcome back</h1>
+          <button
+            type="button"
+            className="icon-button"
+            onClick={toggleTheme}
+            aria-label="Toggle theme"
+          >
+            {theme === "dark" ? "☀️" : "🌙"}
+          </button>
+        </div>
+
+        <h2>Login to your dashboard</h2>
 
         <form onSubmit={handleSubmit}>
           <label>Email</label>
@@ -40,7 +59,14 @@ function Login() {
         </form>
 
         <p>
-          Don't have an account? <a href="/register">Register</a>
+          Don&apos;t have an account?{" "}
+          <button
+            type="button"
+            className="text-link-button"
+            onClick={() => navigate("register")}
+          >
+            Register
+          </button>
         </p>
       </div>
     </div>

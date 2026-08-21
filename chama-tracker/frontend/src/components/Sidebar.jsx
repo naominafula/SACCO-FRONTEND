@@ -1,51 +1,56 @@
 import React from "react";
 
-function Sidebar() {
+const navItems = [
+  { label: "Dashboard", path: "dashboard", icon: "📊" },
+  { label: "Members", path: "members", icon: "👥" },
+  { label: "Contributions", path: "contributions", icon: "💰" },
+  { label: "Loans", path: "loans", icon: "💵" },
+  { label: "Repayments", path: "repayments", icon: "🔄" },
+  { label: "SMS", path: "sms", icon: "📱" },
+  { label: "Email", path: "email", icon: "📧" },
+  { label: "Reports", path: "reports", icon: "📈" },
+];
+
+function Sidebar({ navigate }) {
+  const currentPage =
+    typeof window !== "undefined"
+      ? window.location.hash.replace("#/", "") || "dashboard"
+      : "dashboard";
+
+  const handleNavigate = (page, event) => {
+    event.preventDefault();
+    if (navigate) {
+      navigate(page);
+    } else {
+      window.location.hash = `#/${page}`;
+    }
+  };
+
   return (
     <aside className="sidebar">
-      <div className="sidebar-title">
-        <h3>Menu</h3>
+      <div className="sidebar-brand">
+        <div className="brand-mark small">S</div>
+        <span>SACCO HUB</span>
       </div>
 
-      <ul className="sidebar-menu">
+      <nav className="sidebar-menu" aria-label="Main navigation">
+        {navItems.map(({ label, path, icon }) => (
+          <a
+            key={path}
+            href={`#/` + path}
+            onClick={(event) => handleNavigate(path, event)}
+            className={`nav-item ${currentPage === path ? "active" : ""}`}
+          >
+            <span className="nav-icon" aria-hidden="true">{icon}</span>
+            <span>{label}</span>
+          </a>
+        ))}
 
-        <li>
-          <a href="#/dashboard">📊 Dashboard</a>
-        </li>
-
-        <li>
-          <a href="#/members">👥 Members</a>
-        </li>
-
-        <li>
-          <a href="#/contributions">💰 Contributions</a>
-        </li>
-
-        <li>
-          <a href="#/loans">💵 Loans</a>
-        </li>
-
-        <li>
-          <a href="#/repayments">🔄 Repayments</a>
-        </li>
-
-        <li>
-          <a href="#/sms">📱 SMS</a>
-        </li>
-
-        <li>
-          <a href="#/email">📧 Email</a>
-        </li>
-
-        <li>
-          <a href="#/reports">📈 Reports</a>
-        </li>
-
-        <li className="logout">
-          <a href="#/login">🚪 Logout</a>
-        </li>
-
-      </ul>
+        <a href="#/login" onClick={(event) => handleNavigate("login", event)} className="nav-item logout-item">
+          <span className="nav-icon" aria-hidden="true">🚪</span>
+          <span>Logout</span>
+        </a>
+      </nav>
     </aside>
   );
 }

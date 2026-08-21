@@ -36,7 +36,7 @@ function Repayments() {
           <div className="page-header">
             <h1>Loan Repayments</h1>
 
-            <button onClick={() => setShowForm(!showForm)}>
+            <button type="button" onClick={() => setShowForm(!showForm)}>
               {showForm ? "Close Form" : "Record Repayment"}
             </button>
           </div>

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 
-function Email() {
+function Email({ toggleTheme, theme }) {
   const [email, setEmail] = useState("");
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
@@ -25,14 +25,17 @@ function Email() {
 
   return (
     <div className="app-layout">
-      <Navbar />
+      <Navbar toggleTheme={toggleTheme} theme={theme} />
 
       <div className="main-layout">
         <Sidebar />
 
         <main className="main-content">
           <div className="page-header">
-            <h1>Email Notifications</h1>
+            <div>
+              <h1>Email Notifications</h1>
+              <p>Send member updates and reminders.</p>
+            </div>
           </div>
 
           <div className="form-card">

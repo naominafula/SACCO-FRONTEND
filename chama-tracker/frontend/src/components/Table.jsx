@@ -1,6 +1,15 @@
 import React from "react";
 
 function Table({ columns, data }) {
+  const renderCell = (column, value) => {
+    if (column === "Status") {
+      const className = String(value).toLowerCase().replace(/\s+/g, "-");
+      return <span className={`status-badge ${className}`}>{value}</span>;
+    }
+
+    return value;
+  };
+
   return (
     <div className="table-container">
       <table className="data-table">
@@ -17,17 +26,13 @@ function Table({ columns, data }) {
             data.map((row, rowIndex) => (
               <tr key={rowIndex}>
                 {columns.map((column, columnIndex) => (
-                  <td key={columnIndex}>
-                    {row[column]}
-                  </td>
+                  <td key={columnIndex}>{renderCell(column, row[column])}</td>
                 ))}
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan={columns.length}>
-                No records found
-              </td>
+              <td colSpan={columns.length}>No records found</td>
             </tr>
           )}
         </tbody>

@@ -2,14 +2,14 @@ import React, { useState } from "react";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 
-function Members() {
+function Members({ toggleTheme, theme }) {
   const [members, setMembers] = useState([
     {
       id: 1,
       name: "John Kamau",
       phone: "0712345678",
       email: "john@example.com",
-      joinDate: "01/01/2026",
+      joinDate: "2026-01-01",
       status: "Active",
       profilePicture: null,
     },
@@ -18,7 +18,7 @@ function Members() {
       name: "Mary Wanjiku",
       phone: "0723456789",
       email: "mary@example.com",
-      joinDate: "05/01/2026",
+      joinDate: "2026-01-05",
       status: "Active",
       profilePicture: null,
     },
@@ -27,14 +27,14 @@ function Members() {
       name: "Peter Mwangi",
       phone: "0734567890",
       email: "peter@example.com",
-      joinDate: "10/01/2026",
+      joinDate: "2026-01-10",
       status: "Active",
       profilePicture: null,
     },
   ]);
 
   const [showForm, setShowForm] = useState(false);
-
+  const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
@@ -43,7 +43,6 @@ function Members() {
     status: "Active",
     profilePicture: null,
   });
-
   const [preview, setPreview] = useState(null);
 
   // Handle text/input changes
@@ -58,9 +57,7 @@ function Members() {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
 
-    if (!file) {
-      return;
-    }
+    if (!file) return;
 
     // Only allow image files
     if (!file.type.startsWith("image/")) {
@@ -74,22 +71,19 @@ function Members() {
       return;
     }
 
-    setFormData({
-      ...formData,
-      profilePicture: file,
-    });
+    setFormData({ ...formData, profilePicture: file });
 
     // Create image preview
     const imageUrl = URL.createObjectURL(file);
     setPreview(imageUrl);
   };
 
-  // Add member
+  // Add or update member
   const handleSubmit = (e) => {
     e.preventDefault();
 
     const newMember = {
-      id: Date.now(),
+      id: editingId || Date.now(),
       name: formData.name,
       phone: formData.phone,
       email: formData.email,
@@ -98,7 +92,15 @@ function Members() {
       profilePicture: preview,
     };
 
-    setMembers([...members, newMember]);
+    if (editingId) {
+      // Update member
+      setMembers((current) =>
+        current.map((member) => (member.id === editingId ? newMember : member))
+      );
+    } else {
+      // Add new member
+      setMembers((current) => [...current, newMember]);
+    }
 
     // Clear form
     setFormData({
@@ -114,6 +116,7 @@ function Members() {
 
     // Close form
     setShowForm(false);
+    setEditingId(null);
   };
 
   // Delete member
@@ -123,16 +126,29 @@ function Members() {
     );
 
     if (confirmDelete) {
-      setMembers(
-        members.filter((member) => member.id !== id)
-      );
+      setMembers((current) => current.filter((member) => member.id !== id));
     }
+  };
+
+  // Start editing member
+  const startEdit = (member) => {
+    setEditingId(member.id);
+    setFormData({
+      name: member.name,
+      phone: member.phone,
+      email: member.email,
+      joinDate: member.joinDate,
+      status: member.status,
+      profilePicture: member.profilePicture,
+    });
+    setPreview(member.profilePicture);
+    setShowForm(true);
   };
 
   // Close form and reset it
   const closeForm = () => {
     setShowForm(false);
-
+    setEditingId(null);
     setFormData({
       name: "",
       phone: "",
@@ -141,31 +157,25 @@ function Members() {
       status: "Active",
       profilePicture: null,
     });
-
     setPreview(null);
   };
 
   return (
     <div className="app-layout">
-      <Navbar />
+      <Navbar toggleTheme={toggleTheme} theme={theme} />
 
       <div className="main-layout">
         <Sidebar />
 
         <main className="main-content">
-
           {/* PAGE HEADER */}
           <div className="page-header">
             <div>
               <h1>Members</h1>
-              <p>Manage SACCO members</p>
+              <p>Manage SACCO members.</p>
             </div>
 
-            <button
-              onClick={() =>
-                showForm ? closeForm() : setShowForm(true)
-              }
-            >
+            <button type="button" onClick={() => (showForm ? closeForm() : setShowForm(true))}>
               {showForm ? "Close" : "+ Add Member"}
             </button>
           </div>
@@ -173,121 +183,54 @@ function Members() {
           {/* ADD MEMBER FORM */}
           {showForm && (
             <div className="form-card member-form">
-
-              <h2>Add New Member</h2>
+              <h2>{editingId ? "Edit Member" : "Add New Member"}</h2>
 
               <form onSubmit={handleSubmit}>
-
                 {/* PROFILE PICTURE */}
                 <div className="profile-upload">
-
                   <div className="profile-preview">
-                    {preview ? (
-                      <img
-                        src={preview}
-                        alt="Profile Preview"
-                      />
-                    ) : (
-                      <span>👤</span>
-                    )}
+                    {preview ? <img src={preview} alt="Profile Preview" /> : <span>👤</span>}
                   </div>
 
                   <div className="upload-area">
-                    <label>
-                      Profile Picture
-                    </label>
-
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageChange}
-                    />
-
-                    <small>
-                      JPG, PNG or WEBP. Maximum size: 2MB.
-                    </small>
+                    <label>Profile Picture</label>
+                    <input type="file" accept="image/*" onChange={handleImageChange} />
+                    <small>JPG, PNG or WEBP. Maximum size: 2MB.</small>
                   </div>
-
                 </div>
 
                 {/* FULL NAME */}
                 <label>Full Name</label>
-
-                <input
-                  type="text"
-                  name="name"
-                  placeholder="Enter full name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                />
+                <input type="text" name="name" placeholder="Enter full name" value={formData.name} onChange={handleChange} required />
 
                 {/* PHONE */}
                 <label>Phone Number</label>
-
-                <input
-                  type="tel"
-                  name="phone"
-                  placeholder="0712345678"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  required
-                />
+                <input type="tel" name="phone" placeholder="0712345678" value={formData.phone} onChange={handleChange} required />
 
                 {/* EMAIL */}
                 <label>Email</label>
-
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="member@example.com"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                />
+                <input type="email" name="email" placeholder="member@example.com" value={formData.email} onChange={handleChange} required />
 
                 {/* JOIN DATE */}
                 <label>Join Date</label>
-
-                <input
-                  type="date"
-                  name="joinDate"
-                  value={formData.joinDate}
-                  onChange={handleChange}
-                  required
-                />
+                <input type="date" name="joinDate" value={formData.joinDate} onChange={handleChange} required />
 
                 {/* STATUS */}
                 <label>Status</label>
-
-                <select
-                  name="status"
-                  value={formData.status}
-                  onChange={handleChange}
-                >
-                  <option value="Active">
-                    Active
-                  </option>
-
-                  <option value="Inactive">
-                    Inactive
-                  </option>
+                <select name="status" value={formData.status} onChange={handleChange}>
+                  <option value="Active">Active</option>
+                  <option value="Inactive">Inactive</option>
                 </select>
 
                 {/* SUBMIT */}
-                <button type="submit">
-                  Add Member
-                </button>
-
+                <button type="submit">{editingId ? "Update Member" : "Add Member"}</button>
               </form>
             </div>
           )}
 
           {/* MEMBERS TABLE */}
           <div className="table-container">
-
             <table className="data-table">
-
               <thead>
                 <tr>
                   <th>ID</th>
@@ -302,92 +245,38 @@ function Members() {
               </thead>
 
               <tbody>
-
                 {members.length > 0 ? (
-
                   members.map((member, index) => (
-
                     <tr key={member.id}>
-
-                      <td>
-                        {index + 1}
-                      </td>
-
-                      {/* PROFILE PICTURE */}
+                      <td>{index + 1}</td>
                       <td>
                         <div className="member-avatar">
-
-                          {member.profilePicture ? (
-                            <img
-                              src={member.profilePicture}
-                              alt={member.name}
-                            />
-                          ) : (
-                            <span>👤</span>
-                          )}
-
+                          {member.profilePicture ? <img src={member.profilePicture} alt={member.name} /> : <span>👤</span>}
                         </div>
                       </td>
-
+                      <td>{member.name}</td>
+                      <td>{member.phone}</td>
+                      <td>{member.email}</td>
+                      <td>{member.joinDate}</td>
                       <td>
-                        {member.name}
+                        <span className={member.status === "Active" ? "status active-status" : "status inactive-status"}>{member.status}</span>
                       </td>
-
                       <td>
-                        {member.phone}
+                        <div className="inline-actions">
+                          <button className="secondary-button small-btn" type="button" onClick={() => startEdit(member)}>Edit</button>
+                          <button className="delete-button" type="button" onClick={() => deleteMember(member.id)}>Delete</button>
+                        </div>
                       </td>
-
-                      <td>
-                        {member.email}
-                      </td>
-
-                      <td>
-                        {member.joinDate}
-                      </td>
-
-                      <td>
-                        <span
-                          className={
-                            member.status === "Active"
-                              ? "status active-status"
-                              : "status inactive-status"
-                          }
-                        >
-                          {member.status}
-                        </span>
-                      </td>
-
-                      <td>
-                        <button
-                          className="delete-button"
-                          onClick={() =>
-                            deleteMember(member.id)
-                          }
-                        >
-                          🗑️ Delete
-                        </button>
-                      </td>
-
                     </tr>
-
                   ))
-
                 ) : (
-
                   <tr>
-                    <td colSpan="8">
-                      No members found.
-                    </td>
+                    <td colSpan="8">No members found.</td>
                   </tr>
-
                 )}
-
               </tbody>
-
             </table>
-
           </div>
-
         </main>
       </div>
     </div>

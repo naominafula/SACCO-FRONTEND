@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 
-function SMS() {
+function SMS({ toggleTheme, theme }) {
   const [phone, setPhone] = useState("");
   const [message, setMessage] = useState("");
 
@@ -22,14 +22,17 @@ function SMS() {
 
   return (
     <div className="app-layout">
-      <Navbar />
+      <Navbar toggleTheme={toggleTheme} theme={theme} />
 
       <div className="main-layout">
         <Sidebar />
 
         <main className="main-content">
           <div className="page-header">
-            <h1>SMS Notifications</h1>
+            <div>
+              <h1>SMS Notifications</h1>
+              <p>Send quick reminders and updates.</p>
+            </div>
           </div>
 
           <div className="form-card">

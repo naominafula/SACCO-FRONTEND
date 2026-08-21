@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-function Register() {
+function Register({ toggleTheme, theme, navigate }) {
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -28,8 +28,27 @@ function Register() {
   return (
     <div className="auth-page">
       <div className="auth-card">
-        <h1>SACCO Chama Tracker</h1>
-        <h2>Create Account</h2>
+        <div className="brand-group">
+          <div className="brand-mark">A</div>
+          <div>
+            <p className="brand-kicker">Member-first finance</p>
+            <h2>Apex SACCO</h2>
+          </div>
+        </div>
+
+        <div className="auth-header-row">
+          <h1>Create account</h1>
+          <button
+            type="button"
+            className="icon-button"
+            onClick={toggleTheme}
+            aria-label="Toggle theme"
+          >
+            {theme === "dark" ? "☀️" : "🌙"}
+          </button>
+        </div>
+
+        <h2>Join your savings community</h2>
 
         <form onSubmit={handleSubmit}>
           <label>Full Name</label>
@@ -86,7 +105,14 @@ function Register() {
         </form>
 
         <p>
-          Already have an account? <a href="/login">Login</a>
+          Already have an account?{" "}
+          <button
+            type="button"
+            className="text-link-button"
+            onClick={() => navigate("login")}
+          >
+            Login
+          </button>
         </p>
       </div>
     </div>

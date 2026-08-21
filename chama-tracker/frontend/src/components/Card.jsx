@@ -1,11 +1,9 @@
 import React from "react";
 
-function Card({ title, value, icon }) {
+function Card({ title, value, icon, tone = "default" }) {
   return (
-    <div className="card">
-      <div className="card-icon">
-        {icon}
-      </div>
+    <div className={`card card--${tone}`}>
+      <div className="card-icon">{icon}</div>
 
       <div className="card-content">
         <h4>{title}</h4>
